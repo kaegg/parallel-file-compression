@@ -14,6 +14,7 @@
 #include <string.h>
 #include "bitio.h"
 #include "tree.h"
+#include "lz77.h"
 
 /***************************************************************************
  *                                CONSTANTS
@@ -22,17 +23,6 @@
 #define DEFAULT_SB_SIZE 4095    /* search buffer size */
 #define N 3
 #define MAX_BIT_BUFFER 16
-
-/***************************************************************************
- *                            TYPE DEFINITIONS
- * Each token is composed by a backward offset, the match's length and the
- * next character in the lookahead.
- * Offset : [0, SB_SIZE]            Length : [0, LA_SIZE]
- ***************************************************************************/
-struct token{
-    int off, len;
-    char next;
-};
 
 /***************************************************************************
  *                         FUNCTIONS DECLARATION
