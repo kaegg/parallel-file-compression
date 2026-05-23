@@ -115,14 +115,6 @@ int main(int argc, char *argv[])
                     goto error;
                 }
                 break;
-
-            case 'p':       /* parallel compression */
-                num_threads = atoi(optarg);
-                if (num_threads < 1){
-                    fprintf(stderr, "Bad thread count value.\n");
-                    goto error;
-                }
-                break;
                 
             case 'h':       /* help */
                 printf("Usage: lz77 <options>\n");
@@ -183,12 +175,8 @@ int main(int argc, char *argv[])
         goto error;
     }
     
-    if (file != NULL) {
-        fclose(file);
-    }
-    if (bitF != NULL) {
-        bitIO_close(bitF);
-    }
+    fclose(file);
+    bitIO_close(bitF);
     return 0;
     
     /* handle error */

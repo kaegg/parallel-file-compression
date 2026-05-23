@@ -213,6 +213,128 @@ struct token match(struct node *tree, int root, unsigned char *window, int la, i
     return t;
 }
 
+
+/***************************************************************************
+ *                       APPEND TOKEN HELPER FUNCTION
+ * Adds a token to a dynamically allocated vector.
+ ***************************************************************************/
+static int append_token(struct token **tokens, int *size, int *capacity, struct token t)
+{
+    struct token *tmp;
+
+    if (*size >= *capacity) {
+        *capacity = (*capacity == 0) ? 128 : (*capacity * 2);
+        tmp = realloc(*tokens, (*capacity) * sizeof(struct token));
+        if (tmp == NULL) {
+            free(*tokens);
+            *tokens = NULL;
+            *size = 0;
+            *capacity = 0;
+            return -1;
+        }
+        *tokens = tmp;
+    }
+
+    (*tokens)[*size] = t;
+    (*size)++;
+    return 0;
+}
+
+/***************************************************************************
+ *                         COMPRESS BLOCK FUNCTION
+ * Compresses a memory block into LZ77 tokens.
+ *
+ * This version is intentionally independent from the global sliding window.
+ * Each block uses only bytes inside [start, end), which makes the block safe
+ * to be compressed by a different thread. The generated tokens can still be
+ * written sequentially to the final bitstream and decoded by the original
+ * decoder, because every token offset is a backward distance.
+ ***************************************************************************/
+void compress_block(
+    unsigned char *input,
+    int start,
+    int end,
+    int la,
+    int sb,
+    struct token **output,
+    int *output_size
+)
+{
+    int LA_SIZE = (la == -1) ? DEFAULT_LA_SIZE : la;
+    int SB_SIZE = (sb == -1) ? DEFAULT_SB_SIZE : sb;
+    int position, search_start, candidate;
+    int best_len, best_off, current_len, max_match;
+    int capacity = 0;
+    struct token t;
+
+    *output = NULL;
+    *output_size = 0;
+
+    if (input == NULL || start < 0 || end <= start) {
+        return;
+    }
+
+    if (LA_SIZE < 1) {
+        LA_SIZE = DEFAULT_LA_SIZE;
+    }
+
+    if (SB_SIZE < 1) {
+        SB_SIZE = DEFAULT_SB_SIZE;
+    }
+
+    position = start;
+
+    while (position < end) {
+        best_len = 0;
+        best_off = 0;
+
+        /*
+         * O token sempre armazena len bytes copiados + 1 byte next.
+         * Por isso o match maximo nao pode consumir o ultimo byte sozinho.
+         */
+        max_match = end - position - 1;
+        if (max_match > LA_SIZE) {
+            max_match = LA_SIZE;
+        }
+        if (max_match < 0) {
+            max_match = 0;
+        }
+
+        search_start = position - SB_SIZE;
+        if (search_start < start) {
+            search_start = start;
+        }
+
+        for (candidate = search_start; candidate < position; candidate++) {
+            current_len = 0;
+
+            while (current_len < max_match &&
+                   input[candidate + current_len] == input[position + current_len]) {
+                current_len++;
+            }
+
+            if (current_len > best_len) {
+                best_len = current_len;
+                best_off = position - candidate;
+
+                if (best_len == max_match) {
+                    break;
+                }
+            }
+        }
+
+        t.off = best_off;
+        t.len = best_len;
+        t.next = input[position + best_len];
+
+        if (append_token(output, output_size, &capacity, t) != 0) {
+            return;
+        }
+
+        position += best_len + 1;
+    }
+}
+
 /***************************************************************************
  *                           WRITECODE FUNCTION
  * Name         : writecode - write the token in the output file
