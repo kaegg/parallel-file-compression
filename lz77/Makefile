@@ -6,7 +6,7 @@ all: lz77
 lz77: main.o lz77.o tree.o bitio.o parallel.o
 	$(CC) -o lz77 main.o lz77.o tree.o bitio.o parallel.o -lm -pthread
 
-main.o: main.c bitio.h lz77.h parallel.h
+main.o: main.c bitio.h lz77.h parallel/parallel.h
 	$(CC) $(CFLAGS) -c main.c
 
 lz77.o: lz77.c bitio.h tree.h lz77.h
@@ -18,8 +18,8 @@ tree.o: tree.c tree.h
 bitio.o: bitio.c bitio.h
 	$(CC) $(CFLAGS) -c bitio.c
 
-parallel.o: parallel.c parallel.h lz77.h bitio.h
-	$(CC) $(CFLAGS) -c parallel.c
+parallel.o: parallel/parallel.c parallel/parallel.h lz77.h bitio.h
+	$(CC) $(CFLAGS) -c parallel/parallel.c -o parallel.o
 
 .PHONY: clean
 

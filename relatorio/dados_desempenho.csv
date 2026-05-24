@@ -1,0 +1,10 @@
+operacao,configuracao,threads,arquivo_entrada_bytes,arquivo_saida_bytes,leitura_s,preparacao_s,processamento_s,escrita_s,total_s,observacao
+compressao,sequencial,1,4055830,2112769,0.012751,0.000077,0.686406,0.140223,0.839464,Arquivo biblia-em-txt.txt comprimido sequencialmente
+compressao,paralela,2,4055830,2113272,0.001696,0.000142,0.616279,0.716585,1.335148,Arquivo biblia-em-txt.txt comprimido com 2 threads
+compressao,paralela,4,4055830,2114249,0.001716,0.000133,0.330753,0.694827,1.028282,Arquivo biblia-em-txt.txt comprimido com 4 threads
+compressao,paralela,8,4055830,2116374,0.006516,0.000121,0.252306,0.708937,0.968799,Arquivo biblia-em-txt.txt comprimido com 8 threads
+descompressao,sequencial,1,2112769,4055830,0.202649,0.000087,0.106159,0.127982,0.436900,Arquivo sequencial relatorio_biblia_seq.lz descomprimido sequencialmente
+descompressao,sequencial-paralelo,1,2116374,4055830,0.203128,0.000084,0.109625,0.129229,0.442092,Arquivo paralelo relatorio_biblia_p8.lz descomprimido sequencialmente
+descompressao,paralela,2,2116374,4055830,0.000037,0.000009,0.150204,0.003316,0.154446,Arquivo paralelo relatorio_biblia_p8.lz descomprimido com 2 threads
+descompressao,paralela,4,2116374,4055830,0.000053,0.000013,0.068445,0.004695,0.074065,Arquivo paralelo relatorio_biblia_p8.lz descomprimido com 4 threads
+descompressao,paralela,8,2116374,4055830,0.000047,0.000011,0.058228,0.003912,0.063148,Arquivo paralelo relatorio_biblia_p8.lz descomprimido com 8 threads
