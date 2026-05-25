@@ -36,7 +36,7 @@ typedef struct {
 /*
  * Funcao: get_wall_time_seconds
  * -----------------------------
- * Retorna o tempo monotônico atual em segundos para medir desempenho.
+ * Retorna o tempo atual em segundos para medir desempenho.
  */
 static double get_wall_time_seconds(void)
 {
