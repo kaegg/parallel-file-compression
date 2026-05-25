@@ -1,13 +1,13 @@
 # Compressão Paralela de Arquivos
 
-Projeto implementando o algoritmo **LZ77** para compressão e descompressão de arquivos de forma paralela.
+Projeto implementando o algoritmo **LZ77** para compressão e descompressão de arquivos, com suporte a execução **paralela** usando múltiplas threads.
 
 ## Estrutura do Projeto
 
 ```
 parallel-file-compression/
 ├── arquivos/                    # Pastas de trabalho (gitignored)
-│   ├── originais/              # Arquivos originais a comprir
+│   ├── originais/              # Arquivos originais a comprimir
 │   ├── comprimidos/            # Arquivos após compressão (.lz77)
 │   └── descomprimidos/         # Arquivos após descompressão
 ├── lz77/                        # Código-fonte do algoritmo
@@ -48,17 +48,26 @@ Isso gerará o executável `lz77`.
 
 ### 3. Executar Compressão
 
-Para comprir um arquivo, use:
+Para comprimir um arquivo, use:
 
 ```bash
 ./lz77 -c -i ../arquivos/originais/seu_arquivo.txt -o ../arquivos/comprimidos/seu_arquivo.lz77
 ```
 
+Para usar compressão paralela com N threads:
+
+```bash
+./lz77 -c -i ../arquivos/originais/seu_arquivo.txt -o ../arquivos/comprimidos/seu_arquivo.lz77 -p N
+```
+
 **Exemplos práticos:**
 
 ```bash
-# Comprimindo um arquivo de texto simples
+# Comprimindo um arquivo de texto simples (sequencial)
 ./lz77 -c -i ../arquivos/originais/teste.txt -o ../arquivos/comprimidos/teste.lz77
+
+# Comprimindo em paralelo com 4 threads
+./lz77 -c -i ../arquivos/originais/teste.txt -o ../arquivos/comprimidos/teste.lz77 -p 4
 
 # Comprimindo com tamanhos customizados de janela
 # (lookahead = 31, searchbuffer = 8191)
@@ -67,10 +76,16 @@ Para comprir um arquivo, use:
 
 ### 4. Executar Descompressão
 
-Para descompir um arquivo:
+Para descompactar um arquivo:
 
 ```bash
 ./lz77 -d -i ../arquivos/comprimidos/seu_arquivo.lz77 -o ../arquivos/descomprimidos/seu_arquivo.txt
+```
+
+Para descompressão em paralelo com 4 threads:
+
+```bash
+./lz77 -d -i ../arquivos/comprimidos/teste.lz77 -o ../arquivos/descomprimidos/teste.txt -p 4
 ```
 
 **Exemplo prático:**
@@ -89,11 +104,12 @@ Para descompir um arquivo:
 | `-o <arquivo>` | Arquivo de saída (obrigatório) |
 | `-l <valor>` | Tamanho do lookahead (padrão: 15) |
 | `-s <valor>` | Tamanho do search buffer (padrão: 4095) |
+| `-p <threads>` | Número de threads para compressão/descompressão paralela |
 | `-h` | Mostra ajuda |
 
 ## Exemplo Completo: Passo a Passo
 
-Vamos comprir e depois descompir um arquivo chamado `exemplo.txt`:
+Vamos comprimir e depois descompactar um arquivo chamado `exemplo.txt`:
 
 ```bash
 # 1. Preparar o ambiente
@@ -110,6 +126,8 @@ make
 
 # 5. Comprimindo
 ./lz77 -c -i ../arquivos/originais/exemplo.txt -o ../arquivos/comprimidos/exemplo.lz77
+# Ou, para compressão paralela com 4 threads:
+# ./lz77 -c -i ../arquivos/originais/exemplo.txt -o ../arquivos/comprimidos/exemplo.lz77 -p 4
 
 # 6. Descomprimindo (para verificação)
 ./lz77 -d -i ../arquivos/comprimidos/exemplo.lz77 -o ../arquivos/descomprimidos/exemplo.txt

@@ -6,26 +6,41 @@
 #include "../lz77.h"
 
 /*
- *  Estrutura que armazena todos os dados necessários para uma thread 
+ *  Estrutura que armazena todos os dados necessários para uma thread
  *  executar a compressão de uma parte específica do arquivo/buffer.
  */
 typedef struct {
-    unsigned char *input; // Ponteiro para o buffer de entrada
-    int start;            // Índice inicial do trecho que a thread deve processar dentro do buffer.
-    int end;              // Índice final do trecho que a thread deve processar dentro do buffer.
-    int thread_id;        // Identificador da thread
-    struct token *output; // Vetor onde será armazenada a saída comprimida produzida pela thread.
-    int output_size;      // Tamanho do vetor de saída produzido pela thread.
-
+    unsigned char *input;        // Ponteiro para o buffer completo de entrada.
+    int start;                   // Índice inicial do trecho que a thread deve processar.
+    int end;                     // Índice final exclusivo do trecho que a thread deve processar.
+    int thread_id;               // Identificador numérico da thread.
+    int la_size;                 // Tamanho do lookahead usado na compressão.
+    int sb_size;                 // Tamanho do search-buffer usado na compressão.
+    char *temporary_output_path; // Caminho do arquivo temporário gerado pela thread.
+    int output_size;             // Quantidade de tokens gerados pela thread.
+    int status;                  // Status da thread: 0 para sucesso e -1 para erro.
 } ThreadData;
 
 /*
- *  Realiza a compressão paralela de um buffer utilizando múltiplas threads.
+ *  Realiza a compressão paralela de um arquivo usando blocos independentes.
+ *  O arquivo final recebe metadados para permitir a descompressão paralela.
  */
-void compress_parallel(
-    unsigned char *buffer, // Ponteiro para os dados de entrada que serão comprimidos.
-    int file_size,         // Tamanho total do buffer/arquivo em bytes.
-    int num_threads        // Quantidade de threads que serão criadas para compressão.
+int compress_parallel_file(
+    const char *input_path,  // Caminho do arquivo original que será comprimido.
+    const char *output_path, // Caminho do arquivo comprimido que será gerado.
+    int number_of_threads,   // Quantidade de threads solicitadas pelo usuário.
+    int la,                  // Tamanho do lookahead; -1 usa o valor padrão.
+    int sb                   // Tamanho do search-buffer; -1 usa o valor padrão.
+);
+
+/*
+ *  Realiza a descompressão paralela de um arquivo gerado pela compressão
+ *  paralela. Usa os metadados do cabeçalho para localizar cada bloco.
+ */
+int decompress_parallel_file(
+    const char *input_path,  // Caminho do arquivo comprimido que será descomprimido.
+    const char *output_path, // Caminho do arquivo descomprimido que será gerado.
+    int number_of_threads    // Quantidade máxima de threads simultâneas.
 );
 
 #endif

@@ -1,0 +1,445 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R 24 0 R] /Count 10 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 3839 >>
+stream
+BT /F2 18 Tf 54 784.00 Td (Relatório Técnico: Compressão e Descompressão Paralela de Arquivos com LZ77) Tj ET
+BT /F2 14 Tf 54 754.00 Td (1. Identificação da Instituição, Curso e Disciplina/Professor) Tj ET
+BT /F1 10 Tf 54 728.00 Td (Instituição: [preencher]) Tj ET
+BT /F1 10 Tf 54 712.00 Td (Curso: [preencher]) Tj ET
+BT /F1 10 Tf 54 696.00 Td (Disciplina: [preencher]) Tj ET
+BT /F1 10 Tf 54 680.00 Td (Professor\(a\): [preencher]) Tj ET
+BT /F1 10 Tf 54 664.00 Td (Ambiente de execução: Linux) Tj ET
+BT /F1 10 Tf 54 648.00 Td (Linguagem: C padrão, com uso de pthread e sem orientação a objetos.) Tj ET
+BT /F2 14 Tf 54 626.00 Td (2. Identificação dos Participantes) Tj ET
+BT /F1 10 Tf 54 600.00 Td (Participante 1: [preencher nome]) Tj ET
+BT /F1 10 Tf 54 584.00 Td (Participante 2: [preencher nome]) Tj ET
+BT /F1 10 Tf 54 568.00 Td (Participante 3: [preencher nome, se houver]) Tj ET
+BT /F1 10 Tf 54 546.00 Td (Observação: os nomes e dados institucionais devem ser preenchidos pelo grupo antes da) Tj ET
+BT /F1 10 Tf 54 533.00 Td (entrega final.) Tj ET
+BT /F2 14 Tf 54 511.00 Td (3. Tema da Paralelização) Tj ET
+BT /F1 10 Tf 54 485.00 Td (O tema escolhido foi a compressão e descompressão de arquivos usando o algoritmo LZ77, com) Tj ET
+BT /F1 10 Tf 54 472.00 Td (paralelização por blocos independentes. O projeto foi baseado no repositório sequencial) Tj ET
+BT /F1 10 Tf 54 459.00 Td ([cstdvd/lz77]\(https://github.com/cstdvd/lz77\), que implementa a lógica básica do algoritmo) Tj ET
+BT /F1 10 Tf 54 446.00 Td (LZ77, incluindo codificação em bits, árvore binária para busca de repetições e rotina de) Tj ET
+BT /F1 10 Tf 54 433.00 Td (descompressão.) Tj ET
+BT /F1 10 Tf 54 411.00 Td (O problema resolvido é reduzir o tamanho de arquivos por meio de compressão sem perdas e,) Tj ET
+BT /F1 10 Tf 54 398.00 Td (posteriormente, recuperar exatamente o conteúdo original. A versão paralela busca acelerar) Tj ET
+BT /F1 10 Tf 54 385.00 Td (principalmente as etapas de compressão e descompressão dividindo o arquivo em blocos) Tj ET
+BT /F1 10 Tf 54 372.00 Td (processados por múltiplas threads.) Tj ET
+BT /F2 14 Tf 54 350.00 Td (4. Explicação da Aplicação Sequencial) Tj ET
+BT /F1 10 Tf 54 324.00 Td (A aplicação sequencial implementa o algoritmo LZ77. O algoritmo percorre o arquivo original) Tj ET
+BT /F1 10 Tf 54 311.00 Td (mantendo uma janela deslizante formada por duas partes:) Tj ET
+BT /F1 10 Tf 54 289.00 Td (? `search-buffer`: região com dados já processados, usada como dicionário.) Tj ET
+BT /F1 10 Tf 54 273.00 Td (? `lookahead`: região com os próximos bytes que ainda serão comprimidos.) Tj ET
+BT /F1 10 Tf 54 251.00 Td (Para cada posição, o compressor procura a maior sequência no lookahead que já apareceu no) Tj ET
+BT /F1 10 Tf 54 238.00 Td (search-buffer. O resultado é um token composto por:) Tj ET
+BT /F1 10 Tf 54 216.00 Td (? `off`: distância para trás onde a sequência repetida começa.) Tj ET
+BT /F1 10 Tf 54 200.00 Td (? `len`: quantidade de bytes repetidos.) Tj ET
+BT /F1 10 Tf 54 184.00 Td (? `next`: próximo byte literal após a repetição.) Tj ET
+BT /F1 10 Tf 54 162.00 Td (Na implementação sequencial, a função encode_with_timing\(\) em lz77.c executa a compressão.) Tj ET
+BT /F1 10 Tf 54 149.00 Td (Ela usa uma árvore binária, implementada em tree.c, para acelerar a busca por sequências) Tj ET
+BT /F1 10 Tf 54 136.00 Td (repetidas. A função writecode\(\) grava cada token em formato compacto no arquivo de saída) Tj ET
+BT /F1 10 Tf 54 123.00 Td (usando a biblioteca de escrita bit a bit de bitio.c.) Tj ET
+BT /F1 10 Tf 54 101.00 Td (A descompressão sequencial é feita por decode_with_timing\(\). Ela lê os tokens com readcode\(\)) Tj ET
+BT /F1 10 Tf 54 88.00 Td (e reconstrói o arquivo original copiando bytes anteriores do buffer de reconstrução ou) Tj ET
+BT /F1 10 Tf 54 75.00 Td (escrevendo o byte literal next.) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 3791 >>
+stream
+BT /F1 10 Tf 54 784.00 Td (Principais arquivos da versão sequencial:) Tj ET
+BT /F1 10 Tf 54 762.00 Td (? `lz77/lz77.c`: compressão, descompressão, geração e leitura de tokens.) Tj ET
+BT /F1 10 Tf 54 746.00 Td (? `lz77/lz77.h`: definições de tokens, estruturas de tempo e protótipos.) Tj ET
+BT /F1 10 Tf 54 730.00 Td (? `lz77/tree.c` e `lz77/tree.h`: árvore binária usada na busca de padrões.) Tj ET
+BT /F1 10 Tf 54 714.00 Td (? `lz77/bitio.c` e `lz77/bitio.h`: leitura e escrita em nível de bits.) Tj ET
+BT /F1 10 Tf 54 698.00 Td (? `lz77/main.c`: interface por linha de comando.) Tj ET
+BT /F2 14 Tf 54 676.00 Td (5. Explicação da Aplicação Paralela) Tj ET
+BT /F1 10 Tf 54 650.00 Td (A aplicação paralela foi construída a partir da versão sequencial, dividindo o arquivo de) Tj ET
+BT /F1 10 Tf 54 637.00 Td (entrada em blocos independentes. Cada thread recebe um intervalo [start, end\) do arquivo) Tj ET
+BT /F1 10 Tf 54 624.00 Td (original e comprime apenas os bytes desse bloco.) Tj ET
+BT /F1 10 Tf 54 602.00 Td (Na compressão paralela, a função principal é compress_parallel_file\(\), localizada em) Tj ET
+BT /F1 10 Tf 54 589.00 Td (lz77/parallel/parallel.c. O funcionamento geral é:) Tj ET
+BT /F1 10 Tf 54 567.00 Td (1. O arquivo de entrada é lido para um buffer em memória.) Tj ET
+BT /F1 10 Tf 54 551.00 Td (2. O tamanho do arquivo é dividido pelo número de threads.) Tj ET
+BT /F1 10 Tf 54 535.00 Td (3. Cada thread recebe um ThreadData com ponteiro para o buffer, início e fim do bloco,) Tj ET
+BT /F1 10 Tf 54 522.00 Td (parâmetros LZ77 e caminho de arquivo temporário.) Tj ET
+BT /F1 10 Tf 54 506.00 Td (4. Cada thread executa compress_thread\(\), que chama compress_block_to_file\(\).) Tj ET
+BT /F1 10 Tf 54 490.00 Td (5. Cada bloco comprimido é gravado em arquivo temporário.) Tj ET
+BT /F1 10 Tf 54 474.00 Td (6. A thread principal escreve o cabeçalho paralelo e concatena os blocos comprimidos na) Tj ET
+BT /F1 10 Tf 54 461.00 Td (ordem correta.) Tj ET
+BT /F1 10 Tf 54 439.00 Td (O cabeçalho paralelo armazena metadados necessários para a descompressão paralela:) Tj ET
+BT /F1 10 Tf 54 417.00 Td (? marcador de arquivo paralelo;) Tj ET
+BT /F1 10 Tf 54 401.00 Td (? assinatura de validação;) Tj ET
+BT /F1 10 Tf 54 385.00 Td (? tamanho do `search-buffer`;) Tj ET
+BT /F1 10 Tf 54 369.00 Td (? tamanho do `lookahead`;) Tj ET
+BT /F1 10 Tf 54 353.00 Td (? quantidade de blocos;) Tj ET
+BT /F1 10 Tf 54 337.00 Td (? quantidade de tokens por bloco.) Tj ET
+BT /F1 10 Tf 54 315.00 Td (Na descompressão paralela, a função decompress_parallel_file\(\) lê esses metadados, calcula a) Tj ET
+BT /F1 10 Tf 54 302.00 Td (posição em bits de cada bloco comprimido e cria threads para descomprimir blocos) Tj ET
+BT /F1 10 Tf 54 289.00 Td (independentes. Cada thread executa decompress_thread\(\), que chama decode_tokens_from_file\(\).) Tj ET
+BT /F1 10 Tf 54 276.00 Td (O resultado de cada bloco é gravado em arquivo temporário e, ao final, a thread principal) Tj ET
+BT /F1 10 Tf 54 263.00 Td (junta os blocos descomprimidos na ordem original.) Tj ET
+BT /F1 10 Tf 54 241.00 Td (As funções de pthread usadas são apenas as permitidas:) Tj ET
+BT /F1 10 Tf 54 219.00 Td (? `pthread_create`) Tj ET
+BT /F1 10 Tf 54 203.00 Td (? `pthread_join`) Tj ET
+BT /F1 10 Tf 54 187.00 Td (? `pthread_exit`) Tj ET
+BT /F1 10 Tf 54 171.00 Td (? `pthread_mutex_lock`) Tj ET
+BT /F1 10 Tf 54 155.00 Td (? `pthread_mutex_unlock`) Tj ET
+BT /F1 10 Tf 54 139.00 Td (? `sem_wait`) Tj ET
+BT /F1 10 Tf 54 123.00 Td (? `sem_post`) Tj ET
+BT /F1 10 Tf 54 107.00 Td (? `sem_trywait`) Tj ET
+BT /F1 10 Tf 54 85.00 Td (O mutex é usado para proteger mensagens e estatísticas compartilhadas. O semáforo controla a) Tj ET
+BT /F1 10 Tf 54 72.00 Td (entrada de threads nas fases paralelas, principalmente na descompressão, quando o arquivo) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 3266 >>
+stream
+BT /F1 10 Tf 54 784.00 Td (pode ter mais blocos que o número de threads simultâneas pedido pelo usuário.) Tj ET
+BT /F2 14 Tf 54 762.00 Td (Modos de Uso) Tj ET
+BT /F1 10 Tf 54 736.00 Td (Compilação:) Tj ET
+BT /F3 8 Tf 54 710.00 Td (cd lz77) Tj ET
+BT /F3 8 Tf 54 700.00 Td (make) Tj ET
+BT /F1 10 Tf 54 680.00 Td (Compressão sequencial:) Tj ET
+BT /F3 8 Tf 54 654.00 Td (./lz77 -c -i ../arquivos/originais/entrada.txt -o ../arquivos/comprimidos/saida_seq.lz) Tj ET
+BT /F1 10 Tf 54 634.00 Td (Compressão paralela:) Tj ET
+BT /F3 8 Tf 54 608.00 Td (./lz77 -c -p 8 -i ../arquivos/originais/entrada.txt -o ../arquivos/comprimidos/saida_par.lz) Tj ET
+BT /F1 10 Tf 54 588.00 Td (Descompressão sequencial:) Tj ET
+BT /F3 8 Tf 54 562.00 Td (./lz77 -d -i ../arquivos/comprimidos/saida_seq.lz -o ../arquivos/descomprimidos/saida_seq.txt) Tj ET
+BT /F1 10 Tf 54 542.00 Td (Descompressão paralela:) Tj ET
+BT /F3 8 Tf 54 516.00 Td (./lz77 -d -p 8 -i ../arquivos/comprimidos/saida_par.lz -o) Tj ET
+BT /F3 8 Tf 54 506.00 Td (../arquivos/descomprimidos/saida_par.txt) Tj ET
+BT /F1 10 Tf 54 486.00 Td (Parâmetros aceitos:) Tj ET
+BT /F1 10 Tf 54 464.00 Td (? `-c`: executa compressão.) Tj ET
+BT /F1 10 Tf 54 448.00 Td (? `-d`: executa descompressão.) Tj ET
+BT /F1 10 Tf 54 432.00 Td (? `-p <threads>`: usa versão paralela com número máximo de threads.) Tj ET
+BT /F1 10 Tf 54 416.00 Td (? `-i <arquivo>`: arquivo de entrada.) Tj ET
+BT /F1 10 Tf 54 400.00 Td (? `-o <arquivo>`: arquivo de saída.) Tj ET
+BT /F1 10 Tf 54 384.00 Td (? `-l <valor>`: tamanho do lookahead.) Tj ET
+BT /F1 10 Tf 54 368.00 Td (? `-s <valor>`: tamanho do search-buffer.) Tj ET
+BT /F1 10 Tf 54 352.00 Td (? `-h`: mostra ajuda.) Tj ET
+BT /F1 10 Tf 54 330.00 Td (Neste projeto, o tamanho do problema é definido principalmente pelo arquivo de entrada) Tj ET
+BT /F1 10 Tf 54 317.00 Td (escolhido. Também é possível variar os parâmetros -l e -s, que alteram o tamanho da janela) Tj ET
+BT /F1 10 Tf 54 304.00 Td (de compressão e influenciam o custo computacional do algoritmo.) Tj ET
+BT /F2 14 Tf 54 282.00 Td (Métricas de Tempo Impressas) Tj ET
+BT /F1 10 Tf 54 256.00 Td (Compressão sequencial:) Tj ET
+BT /F1 10 Tf 54 234.00 Td (? `Leitura do arquivo`: tempo gasto lendo bytes do arquivo original.) Tj ET
+BT /F1 10 Tf 54 218.00 Td (? `Preparacao`: tempo de abertura de arquivos e preparação inicial.) Tj ET
+BT /F1 10 Tf 54 202.00 Td (? `Compressao sequencial`: tempo gasto na lógica LZ77 sequencial, desconsiderando) Tj ET
+BT /F1 10 Tf 54 189.00 Td (leitura e escrita medidas separadamente.) Tj ET
+BT /F1 10 Tf 54 173.00 Td (? `Escrita`: tempo gasto escrevendo tokens e fazendo flush do arquivo comprimido.) Tj ET
+BT /F1 10 Tf 54 157.00 Td (? `Tempo total sequencial`: tempo completo da operação.) Tj ET
+BT /F1 10 Tf 54 135.00 Td (Compressão paralela:) Tj ET
+BT /F1 10 Tf 54 113.00 Td (? `Leitura do arquivo`: tempo para carregar o arquivo original em memória.) Tj ET
+BT /F1 10 Tf 54 97.00 Td (? `Preparacao`: tempo para abrir saída, alocar estruturas, inicializar mutex e semáforo.) Tj ET
+BT /F1 10 Tf 54 81.00 Td (? `Compressao nas threads`: tempo de parede desde a criação das threads até o término de) Tj ET
+BT /F1 10 Tf 54 68.00 Td (todas elas. Não é soma dos tempos individuais; representa a duração real da fase) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 4362 >>
+stream
+BT /F1 10 Tf 54 784.00 Td (paralela.) Tj ET
+BT /F1 10 Tf 54 768.00 Td (? `Escrita/copia final`: tempo para escrever o cabeçalho paralelo e copiar os blocos) Tj ET
+BT /F1 10 Tf 54 755.00 Td (temporários para o arquivo final.) Tj ET
+BT /F1 10 Tf 54 739.00 Td (? `Tempo total paralelo`: tempo total medido dentro da função paralela.) Tj ET
+BT /F1 10 Tf 54 717.00 Td (Descompressão sequencial:) Tj ET
+BT /F1 10 Tf 54 695.00 Td (? `Leitura/metadados`: tempo gasto lendo cabeçalho, metadados e tokens.) Tj ET
+BT /F1 10 Tf 54 679.00 Td (? `Preparacao`: tempo de abertura dos arquivos.) Tj ET
+BT /F1 10 Tf 54 663.00 Td (? `Descompressao sequencial`: tempo gasto reconstruindo os dados.) Tj ET
+BT /F1 10 Tf 54 647.00 Td (? `Escrita/juncao final`: tempo gasto escrevendo o arquivo descomprimido.) Tj ET
+BT /F1 10 Tf 54 631.00 Td (? `Tempo total sequencial`: tempo completo da operação.) Tj ET
+BT /F1 10 Tf 54 609.00 Td (Descompressão paralela:) Tj ET
+BT /F1 10 Tf 54 587.00 Td (? `Leitura/metadados`: tempo gasto lendo cabeçalho paralelo e calculando offsets dos) Tj ET
+BT /F1 10 Tf 54 574.00 Td (blocos.) Tj ET
+BT /F1 10 Tf 54 558.00 Td (? `Preparacao`: tempo para alocar estruturas e inicializar sincronização.) Tj ET
+BT /F1 10 Tf 54 542.00 Td (? `Descompressao nas threads`: tempo de parede da fase paralela de descompressão.) Tj ET
+BT /F1 10 Tf 54 526.00 Td (? `Escrita/juncao final`: tempo para juntar os blocos temporários em ordem.) Tj ET
+BT /F1 10 Tf 54 510.00 Td (? `Tempo total paralelo`: tempo completo da descompressão paralela.) Tj ET
+BT /F2 14 Tf 54 488.00 Td (6. Avaliação de Desempenho da Execução) Tj ET
+BT /F1 10 Tf 54 462.00 Td (Os testes foram executados em ambiente Linux usando o arquivo:) Tj ET
+BT /F3 8 Tf 54 436.00 Td (arquivos/originais/biblia-em-txt.txt) Tj ET
+BT /F1 10 Tf 54 416.00 Td (Tamanho do arquivo original: 4.055.830 bytes.) Tj ET
+BT /F2 12 Tf 54 394.00 Td (Resultados de Compressão) Tj ET
+BT /F3 8 Tf 54 371.00 Td (| Configuração | Threads | Tempo total \(s\) | Processamento \(s\) | Escrita \(s\) | Tamanho) Tj ET
+BT /F3 8 Tf 54 361.00 Td (comprimido \(bytes\) |) Tj ET
+BT /F3 8 Tf 54 351.00 Td (|---|---:|---:|---:|---:|---:|) Tj ET
+BT /F3 8 Tf 54 341.00 Td (| Sequencial | 1 | 0,839464 | 0,686406 | 0,140223 | 2.112.769 |) Tj ET
+BT /F3 8 Tf 54 331.00 Td (| Paralela | 2 | 1,335148 | 0,616279 | 0,716585 | 2.113.272 |) Tj ET
+BT /F3 8 Tf 54 321.00 Td (| Paralela | 4 | 1,028282 | 0,330753 | 0,694827 | 2.114.249 |) Tj ET
+BT /F3 8 Tf 54 311.00 Td (| Paralela | 8 | 0,968799 | 0,252306 | 0,708937 | 2.116.374 |) Tj ET
+BT /F2 12 Tf 54 295.00 Td (Resultados de Descompressão) Tj ET
+BT /F3 8 Tf 54 272.00 Td (| Configuração | Threads | Tempo total \(s\) | Processamento \(s\) | Escrita \(s\) |) Tj ET
+BT /F3 8 Tf 54 262.00 Td (|---|---:|---:|---:|---:|) Tj ET
+BT /F3 8 Tf 54 252.00 Td (| Sequencial sobre arquivo sequencial | 1 | 0,436900 | 0,106159 | 0,127982 |) Tj ET
+BT /F3 8 Tf 54 242.00 Td (| Sequencial sobre arquivo paralelo | 1 | 0,442092 | 0,109625 | 0,129229 |) Tj ET
+BT /F3 8 Tf 54 232.00 Td (| Paralela sobre arquivo paralelo | 2 | 0,154446 | 0,150204 | 0,003316 |) Tj ET
+BT /F3 8 Tf 54 222.00 Td (| Paralela sobre arquivo paralelo | 4 | 0,074065 | 0,068445 | 0,004695 |) Tj ET
+BT /F3 8 Tf 54 212.00 Td (| Paralela sobre arquivo paralelo | 8 | 0,063148 | 0,058228 | 0,003912 |) Tj ET
+BT /F2 12 Tf 54 196.00 Td (Análise dos Resultados) Tj ET
+BT /F1 10 Tf 54 173.00 Td (Na compressão, a fase Compressao nas threads melhorou conforme o número de threads aumentou.) Tj ET
+BT /F1 10 Tf 54 160.00 Td (Com 8 threads, a fase de processamento caiu de 0,686406 s na versão sequencial para 0,252306) Tj ET
+BT /F1 10 Tf 54 147.00 Td (s na fase paralela. Porém, o tempo total da compressão paralela ainda ficou maior que o) Tj ET
+BT /F1 10 Tf 54 134.00 Td (sequencial. O motivo principal foi a fase Escrita/copia final, que ficou em torno de 0,70 s.) Tj ET
+BT /F1 10 Tf 54 121.00 Td (Essa fase é serial e copia os blocos temporários para o arquivo final bit a bit.) Tj ET
+BT /F1 10 Tf 54 99.00 Td (Na descompressão, a versão paralela apresentou ganho claro. A descompressão sequencial do) Tj ET
+BT /F1 10 Tf 54 86.00 Td (arquivo paralelo levou 0,442092 s, enquanto a descompressão paralela com 8 threads levou) Tj ET
+BT /F1 10 Tf 54 73.00 Td (0,063148 s. Isso ocorreu porque os metadados do arquivo paralelo permitem que cada thread) Tj ET
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 15 0 R >>
+endobj
+15 0 obj
+<< /Length 4016 >>
+stream
+BT /F1 10 Tf 54 784.00 Td (localize diretamente o início de seu bloco e reconstrua parte do arquivo de forma) Tj ET
+BT /F1 10 Tf 54 771.00 Td (independente.) Tj ET
+BT /F1 10 Tf 54 749.00 Td (Os tamanhos comprimidos paralelos ficaram ligeiramente maiores que o sequencial. Isso) Tj ET
+BT /F1 10 Tf 54 736.00 Td (acontece porque cada bloco é comprimido independentemente; assim, repetições que cruzariam) Tj ET
+BT /F1 10 Tf 54 723.00 Td (fronteiras entre blocos não são aproveitadas.) Tj ET
+BT /F2 12 Tf 54 701.00 Td (Corretude dos Resultados) Tj ET
+BT /F1 10 Tf 54 678.00 Td (A corretude foi verificada comparando o arquivo original com os arquivos descomprimidos) Tj ET
+BT /F1 10 Tf 54 665.00 Td (usando cmp. Nos experimentos realizados, os seguintes comandos não apresentaram diferenças:) Tj ET
+BT /F3 8 Tf 54 639.00 Td (cmp ../arquivos/originais/biblia-em-txt.txt) Tj ET
+BT /F3 8 Tf 54 629.00 Td (../arquivos/descomprimidos/relatorio_biblia_seq_decode.txt) Tj ET
+BT /F3 8 Tf 54 619.00 Td (cmp ../arquivos/originais/biblia-em-txt.txt) Tj ET
+BT /F3 8 Tf 54 609.00 Td (../arquivos/descomprimidos/relatorio_biblia_p8_seqdecode.txt) Tj ET
+BT /F3 8 Tf 54 599.00 Td (cmp ../arquivos/originais/biblia-em-txt.txt) Tj ET
+BT /F3 8 Tf 54 589.00 Td (../arquivos/descomprimidos/relatorio_biblia_p8_decode_p2.txt) Tj ET
+BT /F3 8 Tf 54 579.00 Td (cmp ../arquivos/originais/biblia-em-txt.txt) Tj ET
+BT /F3 8 Tf 54 569.00 Td (../arquivos/descomprimidos/relatorio_biblia_p8_decode_p4.txt) Tj ET
+BT /F3 8 Tf 54 559.00 Td (cmp ../arquivos/originais/biblia-em-txt.txt) Tj ET
+BT /F3 8 Tf 54 549.00 Td (../arquivos/descomprimidos/relatorio_biblia_p8_decode_p8.txt) Tj ET
+BT /F1 10 Tf 54 529.00 Td (Assim, os arquivos descomprimidos pela versão sequencial e paralela foram iguais ao arquivo) Tj ET
+BT /F1 10 Tf 54 516.00 Td (original nos testes executados.) Tj ET
+BT /F2 14 Tf 54 494.00 Td (7. Atividades dos Participantes) Tj ET
+BT /F1 10 Tf 54 468.00 Td (Participante 1: [preencher nome]) Tj ET
+BT /F1 10 Tf 54 452.00 Td (Responsabilidade sugerida: estudo da versão sequencial, integração de main.c, testes de) Tj ET
+BT /F1 10 Tf 54 439.00 Td (compressão sequencial e documentação do uso do programa.) Tj ET
+BT /F1 10 Tf 54 417.00 Td (Participante 2: [preencher nome]) Tj ET
+BT /F1 10 Tf 54 401.00 Td (Responsabilidade sugerida: implementação da compressão paralela em parallel/parallel.c,) Tj ET
+BT /F1 10 Tf 54 388.00 Td (criação de threads, divisão dos blocos e sincronização com mutex/semaforo.) Tj ET
+BT /F1 10 Tf 54 366.00 Td (Participante 3: [preencher nome, se houver]) Tj ET
+BT /F1 10 Tf 54 350.00 Td (Responsabilidade sugerida: implementação da descompressão paralela, cabeçalho com metadados,) Tj ET
+BT /F1 10 Tf 54 337.00 Td (verificação de corretude, coleta de tempos e análise de desempenho.) Tj ET
+BT /F1 10 Tf 54 315.00 Td (Observação: esta divisão deve ser ajustada para refletir fielmente o que cada integrante) Tj ET
+BT /F1 10 Tf 54 302.00 Td (realizou.) Tj ET
+BT /F2 14 Tf 54 280.00 Td (8. Autoavaliação) Tj ET
+BT /F1 10 Tf 54 254.00 Td (O projeto conseguiu implementar compressão e descompressão LZ77 em versões sequencial e) Tj ET
+BT /F1 10 Tf 54 241.00 Td (paralela. A aplicação permite definir arquivo de entrada, arquivo de saída, número de) Tj ET
+BT /F1 10 Tf 54 228.00 Td (threads, tamanho do lookahead e tamanho do search-buffer.) Tj ET
+BT /F1 10 Tf 54 206.00 Td (As principais dificuldades foram:) Tj ET
+BT /F1 10 Tf 54 184.00 Td (? entender o formato original de escrita bit a bit;) Tj ET
+BT /F1 10 Tf 54 168.00 Td (? garantir que blocos comprimidos independentemente continuassem descomprimíveis;) Tj ET
+BT /F1 10 Tf 54 152.00 Td (? permitir descompressão paralela, o que exigiu armazenar metadados de blocos;) Tj ET
+BT /F1 10 Tf 54 136.00 Td (? medir separadamente leitura, processamento e escrita;) Tj ET
+BT /F1 10 Tf 54 120.00 Td (? controlar o custo da fase serial de escrita/cópia final.) Tj ET
+BT /F1 10 Tf 54 98.00 Td (O que funciona:) Tj ET
+BT /F1 10 Tf 54 76.00 Td (? compressão sequencial;) Tj ET
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 17 0 R >>
+endobj
+17 0 obj
+<< /Length 1903 >>
+stream
+BT /F1 10 Tf 54 784.00 Td (? descompressão sequencial;) Tj ET
+BT /F1 10 Tf 54 768.00 Td (? compressão paralela por blocos;) Tj ET
+BT /F1 10 Tf 54 752.00 Td (? descompressão paralela de arquivos gerados pela compressão paralela nova;) Tj ET
+BT /F1 10 Tf 54 736.00 Td (? medição detalhada de tempos;) Tj ET
+BT /F1 10 Tf 54 720.00 Td (? verificação experimental por comparação byte a byte com `cmp`.) Tj ET
+BT /F1 10 Tf 54 698.00 Td (Limitações:) Tj ET
+BT /F1 10 Tf 54 676.00 Td (? a compressão paralela pode ser mais lenta que a sequencial em arquivos médios, pois a) Tj ET
+BT /F1 10 Tf 54 663.00 Td (fase de escrita/cópia final ainda é serial e custosa;) Tj ET
+BT /F1 10 Tf 54 647.00 Td (? arquivos paralelos antigos, gerados antes da inclusão do cabeçalho com metadados, não) Tj ET
+BT /F1 10 Tf 54 634.00 Td (podem ser descomprimidos em paralelo;) Tj ET
+BT /F1 10 Tf 54 618.00 Td (? a compressão por blocos independentes reduz a capacidade de encontrar repetições entre) Tj ET
+BT /F1 10 Tf 54 605.00 Td (blocos;) Tj ET
+BT /F1 10 Tf 54 589.00 Td (? a verificação de corretude foi executada nos experimentos por comparação externa com) Tj ET
+BT /F1 10 Tf 54 576.00 Td (`cmp`; uma opção interna dedicada de verificação pode ser adicionada como melhoria) Tj ET
+BT /F1 10 Tf 54 563.00 Td (futura.) Tj ET
+BT /F1 10 Tf 54 541.00 Td (Conclusão: a paralelização foi mais efetiva na descompressão do que na compressão. Na) Tj ET
+BT /F1 10 Tf 54 528.00 Td (compressão, a parte computacional acelerou, mas o ganho foi reduzido pela escrita final. Na) Tj ET
+BT /F1 10 Tf 54 515.00 Td (descompressão, o processamento por blocos independentes obteve redução significativa no) Tj ET
+BT /F1 10 Tf 54 502.00 Td (tempo total.) Tj ET
+BT /F2 14 Tf 54 480.00 Td (Referência) Tj ET
+BT /F1 10 Tf 54 454.00 Td (Repositório base da implementação sequencial:) Tj ET
+BT /F1 10 Tf 54 438.00 Td (https://github.com/cstdvd/lz77) Tj ET
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 19 0 R >>
+endobj
+19 0 obj
+<< /Length 902 >>
+stream
+BT /F2 14 Tf 54 784.00 Td (Grafico 1 - Tempo total de compressao) Tj ET
+95.00 190.00 m 95.00 650.00 l S
+95.00 190.00 m 485.00 190.00 l S
+0.78 g 95.00 190.00 84.00 289.22 re f 0 g
+95.00 190.00 84.00 289.22 re S
+BT /F3 8 Tf 95.00 174.00 Td (sequencial) Tj ET
+BT /F3 8 Tf 95.00 487.22 Td (0.839 s) Tj ET
+0.78 g 197.00 190.00 84.00 460.00 re f 0 g
+197.00 190.00 84.00 460.00 re S
+BT /F3 8 Tf 197.00 174.00 Td (2 th) Tj ET
+BT /F3 8 Tf 197.00 658.00 Td (1.335 s) Tj ET
+0.78 g 299.00 190.00 84.00 354.28 re f 0 g
+299.00 190.00 84.00 354.28 re S
+BT /F3 8 Tf 299.00 174.00 Td (4 th) Tj ET
+BT /F3 8 Tf 299.00 552.28 Td (1.028 s) Tj ET
+0.78 g 401.00 190.00 84.00 333.78 re f 0 g
+401.00 190.00 84.00 333.78 re S
+BT /F3 8 Tf 401.00 174.00 Td (8 th) Tj ET
+BT /F3 8 Tf 401.00 531.78 Td (0.969 s) Tj ET
+BT /F1 9 Tf 54 145.00 Td (Grafico de barras gerado a partir dos tempos medidos no ambiente Linux do projeto.) Tj ET
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 21 0 R >>
+endobj
+21 0 obj
+<< /Length 913 >>
+stream
+BT /F2 14 Tf 54 784.00 Td (Grafico 2 - Tempo de processamento da compressao) Tj ET
+95.00 190.00 m 95.00 650.00 l S
+95.00 190.00 m 485.00 190.00 l S
+0.78 g 95.00 190.00 84.00 460.00 re f 0 g
+95.00 190.00 84.00 460.00 re S
+BT /F3 8 Tf 95.00 174.00 Td (sequencial) Tj ET
+BT /F3 8 Tf 95.00 658.00 Td (0.686 s) Tj ET
+0.78 g 197.00 190.00 84.00 413.00 re f 0 g
+197.00 190.00 84.00 413.00 re S
+BT /F3 8 Tf 197.00 174.00 Td (2 th) Tj ET
+BT /F3 8 Tf 197.00 611.00 Td (0.616 s) Tj ET
+0.78 g 299.00 190.00 84.00 221.66 re f 0 g
+299.00 190.00 84.00 221.66 re S
+BT /F3 8 Tf 299.00 174.00 Td (4 th) Tj ET
+BT /F3 8 Tf 299.00 419.66 Td (0.331 s) Tj ET
+0.78 g 401.00 190.00 84.00 169.08 re f 0 g
+401.00 190.00 84.00 169.08 re S
+BT /F3 8 Tf 401.00 174.00 Td (8 th) Tj ET
+BT /F3 8 Tf 401.00 367.08 Td (0.252 s) Tj ET
+BT /F1 9 Tf 54 145.00 Td (Grafico de barras gerado a partir dos tempos medidos no ambiente Linux do projeto.) Tj ET
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 23 0 R >>
+endobj
+23 0 obj
+<< /Length 894 >>
+stream
+BT /F2 14 Tf 54 784.00 Td (Grafico 3 - Tempo total de descompressao) Tj ET
+95.00 190.00 m 95.00 650.00 l S
+95.00 190.00 m 485.00 190.00 l S
+0.78 g 95.00 190.00 84.00 460.00 re f 0 g
+95.00 190.00 84.00 460.00 re S
+BT /F3 8 Tf 95.00 174.00 Td (seq) Tj ET
+BT /F3 8 Tf 95.00 658.00 Td (0.437 s) Tj ET
+0.78 g 197.00 190.00 84.00 162.61 re f 0 g
+197.00 190.00 84.00 162.61 re S
+BT /F3 8 Tf 197.00 174.00 Td (2 th) Tj ET
+BT /F3 8 Tf 197.00 360.61 Td (0.154 s) Tj ET
+0.78 g 299.00 190.00 84.00 77.98 re f 0 g
+299.00 190.00 84.00 77.98 re S
+BT /F3 8 Tf 299.00 174.00 Td (4 th) Tj ET
+BT /F3 8 Tf 299.00 275.98 Td (0.074 s) Tj ET
+0.78 g 401.00 190.00 84.00 66.49 re f 0 g
+401.00 190.00 84.00 66.49 re S
+BT /F3 8 Tf 401.00 174.00 Td (8 th) Tj ET
+BT /F3 8 Tf 401.00 264.49 Td (0.063 s) Tj ET
+BT /F1 9 Tf 54 145.00 Td (Grafico de barras gerado a partir dos tempos medidos no ambiente Linux do projeto.) Tj ET
+endstream
+endobj
+24 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 25 0 R >>
+endobj
+25 0 obj
+<< /Length 909 >>
+stream
+BT /F2 14 Tf 54 784.00 Td (Grafico 4 - Tempo de processamento da descompressao) Tj ET
+95.00 190.00 m 95.00 650.00 l S
+95.00 190.00 m 485.00 190.00 l S
+0.78 g 95.00 190.00 84.00 325.11 re f 0 g
+95.00 190.00 84.00 325.11 re S
+BT /F3 8 Tf 95.00 174.00 Td (seq) Tj ET
+BT /F3 8 Tf 95.00 523.11 Td (0.106 s) Tj ET
+0.78 g 197.00 190.00 84.00 460.00 re f 0 g
+197.00 190.00 84.00 460.00 re S
+BT /F3 8 Tf 197.00 174.00 Td (2 th) Tj ET
+BT /F3 8 Tf 197.00 658.00 Td (0.150 s) Tj ET
+0.78 g 299.00 190.00 84.00 209.61 re f 0 g
+299.00 190.00 84.00 209.61 re S
+BT /F3 8 Tf 299.00 174.00 Td (4 th) Tj ET
+BT /F3 8 Tf 299.00 407.61 Td (0.068 s) Tj ET
+0.78 g 401.00 190.00 84.00 178.32 re f 0 g
+401.00 190.00 84.00 178.32 re S
+BT /F3 8 Tf 401.00 174.00 Td (8 th) Tj ET
+BT /F3 8 Tf 401.00 376.32 Td (0.058 s) Tj ET
+BT /F1 9 Tf 54 145.00 Td (Grafico de barras gerado a partir dos tempos medidos no ambiente Linux do projeto.) Tj ET
+endstream
+endobj
+xref
+0 26
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000184 00000 n 
+0000000254 00000 n 
+0000000329 00000 n 
+0000000397 00000 n 
+0000000543 00000 n 
+0000004434 00000 n 
+0000004580 00000 n 
+0000008423 00000 n 
+0000008571 00000 n 
+0000011890 00000 n 
+0000012038 00000 n 
+0000016453 00000 n 
+0000016601 00000 n 
+0000020670 00000 n 
+0000020818 00000 n 
+0000022774 00000 n 
+0000022922 00000 n 
+0000023876 00000 n 
+0000024024 00000 n 
+0000024989 00000 n 
+0000025137 00000 n 
+0000026083 00000 n 
+0000026231 00000 n 
+trailer
+<< /Size 26 /Root 1 0 R >>
+startxref
+27192
+%%EOF
